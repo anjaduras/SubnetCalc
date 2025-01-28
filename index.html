@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimal Subnet Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+    input {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Minimal Subnet Calculator</h1>
+
+  <label for="ip">IP Address:</label>
+  <input type="text" id="ip" placeholder="e.g. 192.168.1.45" />
+
+  <label for="subnet">Subnet Mask:</label>
+  <input type="text" id="subnet" placeholder="e.g. 255.255.255.0" />
+
+  <button onclick="calculateNetwork()">Calculate Network Address</button>
+
+  <div class="result" id="result"></div>
+
+  <script>
+    function ipToBinary(ip) {
+      return ip.split('.').map(octet => {
+        return ('00000000' + parseInt(octet).toString(2)).slice(-8);
+      }).join('');
+    }
+
+    function binaryToIp(binary) {
+      return binary.match(/.{8}/g).map(bin => parseInt(bin, 2)).join('.');
+    }
+
+    function calculateNetwork() {
+      const ip = document.getElementById('ip').value;
+      const subnetMask = document.getElementById('subnet').value;
+
+      // Convert to binary
+      const ipBinary = ipToBinary(ip);
+      const maskBinary = ipToBinary(subnetMask);
+
+      // Calculate the network address using bitwise AND
+      const networkBinary = ipBinary.split('').map((bit, index) => {
+        return maskBinary[index] === '1' ? bit : '0';
+      }).join('');
+
+      const networkAddress = binaryToIp(networkBinary);
+      
+      // Show result
+      document.getElementById('result').innerHTML = `Network Address: ${networkAddress}`;
+    }
+  </script>
+
+</body>
+</html>
