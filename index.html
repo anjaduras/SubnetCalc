@@ -6,58 +6,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     <link rel="stylesheet" href="styles.css">
-</head>
-<title>Minimal Subnet Calculator</title>
-
+    <title>Minimal Subnet Calculator</title>
 </head>
 
 <body>
     <section class="section">
         <div class="container">
-            <h1>Minimal Subnet Calculator</h1>
+            <h1 class="title">Minimal Subnet Calculator</h1>
 
-            <label for="ip">IP Address:</label>
-            <input type="text" id="ip" placeholder="e.g. 192.168.1.45" />
+            <!-- CIDR input field -->
+            <div class="field">
+                <label class="label">Enter CIDR Notation</label>
+                <div class="control">
+                    <input id="cidrInput" class="input" type="text" placeholder="e.g. 192.168.1.0/24">
+                </div>
+            </div>
 
-            <label for="subnet">Subnet Mask:</label>
-            <input type="text" id="subnet" placeholder="e.g. 255.255.255.0" />
+            <!-- Button to trigger calculation -->
+            <div class="control">
+                <button id="calculateBtn" class="button is-primary">Get Subnet Mask</button>
+            </div>
 
-            <button onclick="calculateNetwork()">Calculate Network Address</button>
-
-            <div class="result" id="result"></div>
+            <!-- Subnet Mask Display -->
+            <div id="subnetMaskDisplay" class="mt-4">
+                <!-- Result will be displayed here -->
+            </div>
         </div>
     </section>
 
-
     <script>
-        function ipToBinary(ip) {
-            return ip.split('.').map(octet => {
-                return ('00000000' + parseInt(octet).toString(2)).slice(-8);
-            }).join('');
-        }
+        document.addEventListener("DOMContentLoaded", function () {
+            // Subnet masks mapped to CIDR lengths
+            const subnetMasks = {
+                "0": "0.0.0.0",
+                "1": "128.0.0.0",
+                "2": "192.0.0.0",
+                "3": "224.0.0.0",
+                "4": "240.0.0.0",
+                "5": "248.0.0.0",
+                "6": "252.0.0.0",
+                "7": "254.0.0.0",
+                "8": "255.0.0.0",
+                "9": "255.128.0.0",
+                "10": "255.192.0.0",
+                "11": "255.224.0.0",
+                "12": "255.240.0.0",
+                "13": "255.248.0.0",
+                "14": "255.252.0.0",
+                "15": "255.254.0.0",
+                "16": "255.255.0.0",
+                "17": "255.255.128.0",
+                "18": "255.255.192.0",
+                "19": "255.255.224.0",
+                "20": "255.255.240.0",
+                "21": "255.255.248.0",
+                "22": "255.255.252.0",
+                "23": "255.255.254.0",
+                "24": "255.255.255.0",
+                "25": "255.255.255.128",
+                "26": "255.255.255.192",
+                "27": "255.255.255.224",
+                "28": "255.255.255.240",
+                "29": "255.255.255.248",
+                "30": "255.255.255.252",
+                "31": "255.255.255.254",
+                "32": "255.255.255.255"
+            };
 
-        function binaryToIp(binary) {
-            return binary.match(/.{8}/g).map(bin => parseInt(bin, 2)).join('.');
-        }
+            // Event listener for the calculate button
+            document.getElementById("calculateBtn").addEventListener("click", function () {
+                const cidrInput = document.getElementById("cidrInput").value.trim();
+                const [ip, cidr] = cidrInput.split('/'); // Separate IP and subnet length
 
-        function calculateNetwork() {
-            const ip = document.getElementById('ip').value;
-            const subnetMask = document.getElementById('subnet').value;
+                // Validate input
+                if (!ip || !cidr || isNaN(cidr)) {
+                    document.getElementById("subnetMaskDisplay").textContent = "Invalid CIDR notation. Please enter in the format 'IP/length'.";
+                    return;
+                }
 
-            // Convert to binary
-            const ipBinary = ipToBinary(ip);
-            const maskBinary = ipToBinary(subnetMask);
+                // Find the subnet mask based on the CIDR length
+                const subnetMask = subnetMasks[cidr];
 
-            // Calculate the network address using bitwise AND
-            const networkBinary = ipBinary.split('').map((bit, index) => {
-                return maskBinary[index] === '1' ? bit : '0';
-            }).join('');
-
-            const networkAddress = binaryToIp(networkBinary);
-
-            // Show result
-            document.getElementById('result').innerHTML = `Network Address: ${networkAddress}`;
-        }
+                if (subnetMask) {
+                    document.getElementById("subnetMaskDisplay").textContent = `Subnet Mask for /${cidr}: ${subnetMask}`;
+                } else {
+                    document.getElementById("subnetMaskDisplay").textContent = "CIDR length not found. Please enter a valid CIDR.";
+                }
+            });
+        });
     </script>
 
 </body>
