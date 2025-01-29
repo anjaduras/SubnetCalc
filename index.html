@@ -10,33 +10,27 @@
 </head>
 
 <body>
-    <section class="section">
-        <div class="container">
+    <section class="section is-large">
+        <div class="container has-text-centered">
             <h1 class="title">Minimal Subnet Calculator</h1>
 
-            <!-- CIDR input field -->
             <div class="field">
                 <label class="label">Enter CIDR Notation</label>
                 <div class="control">
-                    <input id="cidrInput" class="input" type="text" placeholder="e.g. 192.168.1.0/24">
+                    <input id="cidrInput" class="input is-link" type="text" placeholder="e.g. 192.168.1.0/24" style="width: 40%; text-align: center;">
                 </div>
             </div>
 
-            <!-- Button to trigger calculation -->
             <div class="control">
-                <button id="calculateBtn" class="button is-primary">Get Subnet Mask</button>
+                <button id="calculateBtn" class="button is-dark">Get Subnet Mask</button>
             </div>
-
-            <!-- Subnet Mask Display -->
             <div id="subnetMaskDisplay" class="mt-4">
-                <!-- Result will be displayed here -->
             </div>
         </div>
     </section>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Subnet masks mapped to CIDR lengths
             const subnetMasks = {
                 "0": "0.0.0.0",
                 "1": "128.0.0.0",
@@ -73,18 +67,15 @@
                 "32": "255.255.255.255"
             };
 
-            // Event listener for the calculate button
             document.getElementById("calculateBtn").addEventListener("click", function () {
                 const cidrInput = document.getElementById("cidrInput").value.trim();
                 const [ip, cidr] = cidrInput.split('/'); // Separate IP and subnet length
 
-                // Validate input
                 if (!ip || !cidr || isNaN(cidr)) {
                     document.getElementById("subnetMaskDisplay").textContent = "Invalid CIDR notation. Please enter in the format 'IP/length'.";
                     return;
                 }
 
-                // Find the subnet mask based on the CIDR length
                 const subnetMask = subnetMasks[cidr];
 
                 if (subnetMask) {
