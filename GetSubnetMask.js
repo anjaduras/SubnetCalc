@@ -52,4 +52,4 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("subnetMaskDisplay").textContent = "CIDR length not found. Please enter a valid CIDR.";
         }
     });
-});
+}); 
